@@ -31,15 +31,22 @@ def get_text_chunks(text):
 
 
 def get_vectorstore(text_chunks):
-    embeddings = OpenAIEmbeddings()
-    # embeddings = HuggingFaceInstructEmbeddings(model_name="hkunlp/instructor-xl")
+
+   # embeddings = OpenAIEmbeddings()
+   # embeddings = OpenAIEmbeddings(openai_api_key="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") #os.environ["OPENAI_API_KEY"]
+
+   # embeddings = HuggingFaceInstructEmbeddings(model_name="hkunlp/instructor-xl",huggingfacehub_api_token ='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')
+    embeddings = HuggingFaceInstructEmbeddings(model_name="hkunlp/instructor-xl")
+
     vectorstore = FAISS.from_texts(texts=text_chunks, embedding=embeddings)
     return vectorstore
 
 
+
 def get_conversation_chain(vectorstore):
-    llm = ChatOpenAI()
-    # llm = HuggingFaceHub(repo_id="google/flan-t5-xxl", model_kwargs={"temperature":0.5, "max_length":512})
+    #llm = ChatOpenAI()
+    llm = HuggingFaceHub(repo_id="google/flan-t5-xxl", model_kwargs={"temperature":0.5, "max_length":512},
+                         huggingfacehub_api_token='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')
 
     memory = ConversationBufferMemory(
         memory_key='chat_history', return_messages=True)
@@ -49,6 +56,7 @@ def get_conversation_chain(vectorstore):
         memory=memory
     )
     return conversation_chain
+
 
 
 def handle_userinput(user_question):
