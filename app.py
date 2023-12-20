@@ -19,29 +19,20 @@ def get_pdf_text(pdf_docs):
     return text
 
 
-def get_text_chunks(text):
-    text_splitter = CharacterTextSplitter(
-        separator="\n",
-        chunk_size=1000,
-        chunk_overlap=200,
-        length_function=len
-    )
-    chunks = text_splitter.split_text(text)
-    return chunks
+OPENAI_API_KEY='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'
 
+
+
+HUGGINGFACEHUB_API_TOKEN='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'
 
 def get_vectorstore(text_chunks):
 
    # embeddings = OpenAIEmbeddings()
    # embeddings = OpenAIEmbeddings(openai_api_key="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") #os.environ["OPENAI_API_KEY"]
 
-   # embeddings = HuggingFaceInstructEmbeddings(model_name="hkunlp/instructor-xl",huggingfacehub_api_token ='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')
-    embeddings = HuggingFaceInstructEmbeddings(model_name="hkunlp/instructor-xl")
-
+    embeddings = HuggingFaceInstructEmbeddings(model_name="hkunlp/instructor-xl") #huggingfacehub_api_token ='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'
     vectorstore = FAISS.from_texts(texts=text_chunks, embedding=embeddings)
     return vectorstore
-
-
 
 def get_conversation_chain(vectorstore):
     #llm = ChatOpenAI()
@@ -56,7 +47,6 @@ def get_conversation_chain(vectorstore):
         memory=memory
     )
     return conversation_chain
-
 
 
 def handle_userinput(user_question):
